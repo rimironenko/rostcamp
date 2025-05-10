@@ -18,7 +18,8 @@ export const productDescriptionTemplate: PromptTemplate = {
   Your job is to create engaging, accurate, and professional product descriptions.
   Always focus on benefits, not just features.
   Never invent features that aren't mentioned in the input.
-  Format your response as JSON with the fields: title, description, keyFeatures (array), and optionally targetAudience.`,
+  Format your response as JSON with the fields: title, description, keyFeatures (array), and optionally targetAudience. 
+  Do not wrap the json codes in JSON markers.`,
   userPromptTemplate: `Create a product description for the following product: {input}`,
   expectedResponseSchema: productDescriptionSchema,
   guardrails: [
