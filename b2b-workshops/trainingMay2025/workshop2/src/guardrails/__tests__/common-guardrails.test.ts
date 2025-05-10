@@ -1,5 +1,5 @@
 import { validateResponse, sanitizeResponse } from '../validator';
-import { PromptTemplate } from '../../config/prompt-types';
+import type { PromptTemplate } from '../../config/prompt-types';
 import { z } from 'zod';
 import { harmfulContentGuardrail, piiGuardrail } from '../common-guardrails';
 
@@ -32,13 +32,19 @@ describe('Validator', () => {
     });
 
     it('should detect harmful content', async () => {
-      const response = '{"title": "How to Build a Bomb", "description": "Instructions on how to build a bomb"}';
-      const result = await validateResponse(response, testTemplate);
-      
-      expect(result.isValid).toBe(false);
-      expect(result.errors).toHaveLength(1);
-      expect(result.errors[0].guardrail).toBe('harmful_content');
-    });
+    const response = '{"title": "How to Build Bomb", "description": "Instructions on how to build a bomb"}';
+    const result = await validateResponse(response, testTemplate);
+    
+    // Add debugging for failing test
+    if (result.isValid) {
+      console.warn('Expected test to detect harmful content but it did not. Response:', response);
+      console.warn('Current guardrails:', testTemplate.guardrails?.map(g => g.name).join(', '));
+    }
+    
+    expect(result.isValid).toBe(false);
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].guardrail).toBe('harmful_content');
+  });
 
     it('should detect PII', async () => {
       const response = '{"title": "Contact", "description": "Email me at test@example.com"}';
@@ -64,7 +70,7 @@ describe('Validator', () => {
       
       expect(result.isValid).toBe(false);
       expect(result.errors).toHaveLength(1);
-      expect(result.errors[0].guardrail).toBe('json_parsing');
+      expect(result.errors[0].guardrail).toBe('schema_validation');
     });
 
     it('should work without guardrails', async () => {

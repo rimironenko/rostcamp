@@ -16,8 +16,8 @@ export const openai = new OpenAI({
 
 // Default models configuration
 export const MODELS = {
-  DEFAULT: 'gpt-4.1',
-  FALLBACK: 'gpt-4o',
+  DEFAULT: 'gpt-4o',
+  FALLBACK: 'gpt-4',
 };
 
 // Default parameters

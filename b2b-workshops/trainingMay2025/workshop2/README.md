@@ -94,18 +94,6 @@ npm run lint
 
 ### Building and Type Checking
 
-To check all TypeScript types without building:
-
-```bash
-npm run check-types
-```
-
-To check specifically the OpenAI service file (common source of errors):
-
-```bash
-npm run check-openai
-```
-
 To compile TypeScript to JavaScript:
 
 ```bash
@@ -121,7 +109,6 @@ The compiled JavaScript will be in the `dist` directory.
 ├── src/                    # Source directory
 │   ├── config/             # Configuration files
 │   │   ├── openai.ts       # OpenAI client configuration
-│   │   ├── openai-types.ts # OpenAI SDK type helpers
 │   │   ├── prompt-types.ts # Type definitions for prompts
 │   │   └── prompt-templates.ts # Prompt template definitions
 │   ├── guardrails/         # Content validation guardrails
@@ -132,9 +119,6 @@ The compiled JavaScript will be in the `dist` directory.
 │   ├── utils/              # Utility functions
 │   │   └── validate-prompt.ts # CLI validation utility
 │   └── index.ts            # Main application entry point
-├── scripts/                # Build and utility scripts
-│   ├── validate-ts.js      # TypeScript validation script
-│   └── validate-openai-service.js # OpenAI types validation
 ├── dist/                   # Compiled JavaScript (generated)
 ├── __tests__/              # Jest test files
 ├── .env                    # Environment variables (create from .env.example)

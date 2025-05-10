@@ -16,7 +16,8 @@
       "*": ["node_modules/*", "src/types/*"]
     },
     "sourceMap": true,
-    "inlineSources": true
+    "inlineSources": true,
+    "isolatedModules": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/__tests__/**"]
