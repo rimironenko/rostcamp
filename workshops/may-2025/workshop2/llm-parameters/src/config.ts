@@ -45,12 +45,6 @@ export const parameterConfigs: ParameterConfig[] = [
     temperature: 1.0,
     top_p: 0.1,
     description: "Low top_p (0.1) considers only the most likely tokens, giving more focused responses."
-  },
-  {
-    name: "High Top P",
-    temperature: 1.0,
-    top_p: 0.9,
-    description: "High top_p (0.9) considers more potential tokens, increasing diversity."
   }
 ];
 
@@ -69,10 +63,10 @@ export const multiRunConfigs: ParameterConfig[] = [
     description: "Low temperature for deterministic responses."
   },
   { 
-    name: "High Temperature (temperature=1.8, top_p=1.0)", 
-    temperature: 1.8, 
+    name: "High Temperature (temperature=1.4, top_p=1.0)", 
+    temperature: 1.4, 
     top_p: 1.0,
-    description: "High temperature for maximum diversity."
+    description: "Higher temperature for more diversity."
   }
 ];
 
