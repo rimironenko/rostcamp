@@ -1,13 +1,16 @@
-# OpenAI TypeScript Project
+# OpenAI TypeScript Project with Guardrails
 
-A TypeScript application that demonstrates how to use the OpenAI API in a Node.js environment.
+A TypeScript application that demonstrates how to use the OpenAI API in a Node.js environment with prompt testing and validation guardrails.
 
 ## Features
 
 - TypeScript configuration optimized for Node.js
-- OpenAI API integration
+- OpenAI API integration with prompt templates
+- Content validation guardrails for safe AI responses
+- Schema validation for structured outputs
+- Unit and integration testing framework
 - Environment variable management with dotenv
-- NPM scripts for development and building
+- NPM scripts for development, testing, and building
 
 ## Prerequisites
 
@@ -59,7 +62,49 @@ To start the application:
 npm start
 ```
 
-### Building for production
+### Testing prompt templates with guardrails
+
+To validate a prompt template against the guardrails:
+
+```bash
+npm run validate productDescription "Wireless noise-cancelling headphones"
+```
+
+### Running tests
+
+To run all tests:
+
+```bash
+npm test
+```
+
+To run only unit tests (without API calls):
+
+```bash
+npm test -- --testPathIgnorePatterns=integration
+```
+
+### Linting
+
+To check code quality:
+
+```bash
+npm run lint
+```
+
+### Building and Type Checking
+
+To check all TypeScript types without building:
+
+```bash
+npm run check-types
+```
+
+To check specifically the OpenAI service file (common source of errors):
+
+```bash
+npm run check-openai
+```
 
 To compile TypeScript to JavaScript:
 
@@ -73,30 +118,78 @@ The compiled JavaScript will be in the `dist` directory.
 
 ```
 .
-├── src/                # Source directory
-│   └── index.ts        # Main application entry point
-├── dist/               # Compiled JavaScript (generated)
-├── .env                # Environment variables (create from .env.example)
-├── .env.example        # Example environment file
-├── .gitignore          # Git ignore file
-├── package.json        # NPM package configuration
-├── tsconfig.json       # TypeScript configuration
-└── README.md           # This documentation
+├── src/                    # Source directory
+│   ├── config/             # Configuration files
+│   │   ├── openai.ts       # OpenAI client configuration
+│   │   ├── openai-types.ts # OpenAI SDK type helpers
+│   │   ├── prompt-types.ts # Type definitions for prompts
+│   │   └── prompt-templates.ts # Prompt template definitions
+│   ├── guardrails/         # Content validation guardrails
+│   │   ├── common-guardrails.ts # Reusable guardrails
+│   │   └── validator.ts    # Response validation logic
+│   ├── services/           # Service layer
+│   │   └── openai-service.ts # OpenAI API service
+│   ├── utils/              # Utility functions
+│   │   └── validate-prompt.ts # CLI validation utility
+│   └── index.ts            # Main application entry point
+├── scripts/                # Build and utility scripts
+│   ├── validate-ts.js      # TypeScript validation script
+│   └── validate-openai-service.js # OpenAI types validation
+├── dist/                   # Compiled JavaScript (generated)
+├── __tests__/              # Jest test files
+├── .env                    # Environment variables (create from .env.example)
+├── .env.example            # Example environment file
+├── .eslintrc.js            # ESLint configuration
+├── .gitignore              # Git ignore file
+├── jest.config.js          # Jest configuration
+├── package.json            # NPM package configuration
+├── tsconfig.json           # TypeScript configuration
+└── README.md               # This documentation
 ```
 
-## Customizing API Calls
+## Working with Prompt Templates
 
-The main OpenAI API call is in `src/index.ts`. You can modify this file to change the model, prompt, temperature, and other parameters:
+Prompt templates are defined in `src/config/prompt-templates.ts`. You can create new templates with specific validation rules:
 
 ```typescript
-const completion = await openai.chat.completions.create({
-  model: "gpt-4",           // Change the model here
-  messages: [
-    { role: "system", content: "You are a helpful assistant." },
-    { role: "user", content: "Hello, world!" }  // Change the prompt here
-  ],
-  // Add other parameters like temperature, max_tokens, etc.
-});
+const myCustomTemplate: PromptTemplate = {
+  name: 'my_template',
+  systemPrompt: 'Your system instructions here',
+  userPromptTemplate: 'Your user message template with {input} placeholder',
+  expectedResponseSchema: z.object({
+    // Define expected response schema using Zod
+    field1: z.string(),
+    field2: z.number(),
+  }),
+  guardrails: [
+    // Add guardrails from common-guardrails.ts or create custom ones
+    harmfulContentGuardrail,
+    piiGuardrail,
+    // Custom guardrail
+    {
+      name: 'custom_check',
+      description: 'Check for custom requirements',
+      severity: 'warning',
+      check: (response) => !response.includes('unwanted text')
+    }
+  ]
+};
+```
+
+## Creating Custom Guardrails
+
+You can create custom guardrails in `src/guardrails/common-guardrails.ts` or directly in your template definition:
+
+```typescript
+const myCustomGuardrail: GuardrailConfig = {
+  name: 'custom_guardrail',
+  description: 'Checks for specific requirements',
+  severity: 'error', // 'error' or 'warning'
+  check: (response: string): boolean => {
+    // Implement your check logic here
+    return !response.includes('problematic content');
+  }
+};
 ```
 
 ## License

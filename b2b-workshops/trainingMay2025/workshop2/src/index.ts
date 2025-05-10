@@ -1,28 +1,51 @@
-import { OpenAI } from 'openai';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-// Initialize the OpenAI client
-// You should use environment variables for the API key in production
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // This reads from the .env file or environment variables
-});
+import { templates } from './config/prompt-templates';
+import openAIService from './services/openai-service';
 
 async function main() {
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: "Hello, world!" }
-      ],
-    });
+    // Demo using a template with guardrails
+    console.log("Testing product description template...");
+    
+    const productInput = "Wireless noise-cancelling headphones with 30-hour battery life, water resistance, and multi-device connectivity";
+    const result = await openAIService.promptWithGuardrails(
+      templates.productDescription, 
+      productInput
+    );
 
-    console.log("Response:", completion.choices[0].message.content);
+    if (result.isValid) {
+      console.log("Response passed all guardrails!");
+      console.log("\nFormatted Response:");
+      console.log(JSON.stringify(result.processedResponse, null, 2));
+    } else {
+      console.log("Response failed guardrails:");
+      
+      result.errors.forEach(error => {
+        console.log(`- ERROR [${error.guardrail}]: ${error.message}`);
+      });
+      
+      result.warnings.forEach(warning => {
+        console.log(`- WARNING [${warning.guardrail}]: ${warning.message}`);
+      });
+      
+      console.log("\nRaw Response:");
+      console.log(result.rawResponse);
+    }
+
+    // Example of content moderation
+    console.log("\n\nTesting content moderation template...");
+    const moderationInput = "I really enjoyed the movie last night!";
+    const moderationResult = await openAIService.promptWithGuardrails(
+      templates.contentModeration, 
+      moderationInput
+    );
+
+    console.log("\nModeration result:");
+    console.log(moderationResult.rawResponse);
+    
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
+// Run the main function
 main();
