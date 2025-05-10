@@ -2,7 +2,7 @@
  * API client functions for the OpenAI parameter demonstration
  */
 
-import { openai, ParameterConfig, DEFAULT_MODEL, SYSTEM_PROMPT, API_CALL_DELAY_MS } from './config';
+import { openai, ParameterConfig, DEFAULT_MODEL, SYSTEM_PROMPT, API_CALL_DELAY_MS, MAX_COMPLETION_TOKENS } from './config';
 
 /**
  * Get a completion from the OpenAI API with the given parameters
@@ -24,7 +24,8 @@ export async function getCompletion(
         { role: "user", content: prompt }
       ],
       temperature: parameters.temperature,
-      top_p: parameters.top_p
+      top_p: parameters.top_p,
+      max_completion_tokens: MAX_COMPLETION_TOKENS
     });
     
     const responseTime = Date.now() - start;

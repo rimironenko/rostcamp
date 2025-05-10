@@ -80,6 +80,7 @@ export const multiRunConfigs: ParameterConfig[] = [
 export const DEFAULT_MODEL = "gpt-4o";
 export const SYSTEM_PROMPT = "You are a helpful assistant.";
 export const NUM_MULTIPLE_RUNS = 10;
+export const MAX_COMPLETION_TOKENS = 500;
 
 // Delay configuration
 export const API_CALL_DELAY_MS = 1000; // 1 second delay between API calls
