@@ -15,6 +15,14 @@ resource "aws_iam_role" "vector_store_cluster_role" {
           Service = "rds.amazonaws.com"
         }
       },
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "bedrock.amazonaws.com"
+        }
+      },
     ]
   })
   tags = var.aws_resource_tags

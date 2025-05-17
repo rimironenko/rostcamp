@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "genai_foundational_model_id" {
   description = "Bedrock Foundational model to use for RAG"
   type        = string
-  default     = "anthropic.claude-3-7-sonnet-20250219-v1:0"
+  default     = "anthropic.claude-3-5-sonnet-20240620-v1:0"
 }
 
 variable "aws_resource_tags" {

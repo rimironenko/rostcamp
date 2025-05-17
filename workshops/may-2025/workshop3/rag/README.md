@@ -54,11 +54,11 @@ see [Model access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ac
 
 1. Create a new directory, navigate to that directory in a terminal and clone the GitHub repository:
    ```bash
-   git clone git@github.com:set-university/genai-workshops.git
+   git clone https://github.com/rimironenko/rostcamp.git
    ```
-2. Change directory to the pattern directory:
+2. Change directory:
     ```bash
-    cd workshop4
+    cd workshops/may-2025/workshop3/rag
     ```
 3. Init terraform:
     ```bash
@@ -100,7 +100,7 @@ Follow the example below and replace `{your-lambda-url}` with your Lambda url fr
 ```bash
  curl -X POST 'https://{your-lambda-url}/' \
    -H 'content-type: application/json' \
-   -d '{ "prompt": "what are the postgres versions?" }'
+   -d '{ "prompt": "Describe how pg_stat_io tracks I/O activity in PostgreSQL." }'
 ```
 
 The response might look like as follows:

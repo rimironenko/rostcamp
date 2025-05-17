@@ -16,6 +16,7 @@ resource "aws_iam_role" "bedrock_service_role" {
       },
     ]
   })
+  depends_on = [module.aurora_postgresql_v2]
 
   tags = var.aws_resource_tags
 }
@@ -64,9 +65,9 @@ resource "aws_iam_role_policy" "bedrock_service_role_policy" {
           "s3:ListBucket"
         ],
         "Resource" : [
-          "arn:aws:s3:::${module.genai_document_bucket.s3_bucket_id}",
-          "arn:aws:s3:::${module.genai_document_bucket.s3_bucket_id}/",
-          "arn:aws:s3:::${module.genai_document_bucket.s3_bucket_id}/*",
+          "arn:aws:s3:::${module.vector_store_input_bucket.s3_bucket_id}",
+          "arn:aws:s3:::${module.vector_store_input_bucket.s3_bucket_id}/",
+          "arn:aws:s3:::${module.vector_store_input_bucket.s3_bucket_id}/*",
         ]
       },
       {
@@ -81,6 +82,12 @@ resource "aws_iam_role_policy" "bedrock_service_role_policy" {
       }
     ]
   })
+  depends_on = [module.aurora_postgresql_v2]
+}
+
+resource "time_sleep" "bedrock_role" {
+  create_duration = "60s"
+  depends_on      = [aws_iam_role.bedrock_service_role, aws_iam_role_policy.bedrock_service_role_policy]
 }
 
 resource "awscc_bedrock_knowledge_base" "genai-bedrock-kb" {
@@ -109,6 +116,7 @@ resource "awscc_bedrock_knowledge_base" "genai-bedrock-kb" {
       embedding_model_arn = local.text_embeddings_model_arn
     }
   }
+  depends_on = [time_sleep.bedrock_role]
 
   tags = var.aws_resource_tags
 }
@@ -120,10 +128,11 @@ resource "awscc_bedrock_data_source" "s3_data_source" {
 
   data_source_configuration = {
     s3_configuration = {
-      bucket_arn = module.genai_document_bucket.s3_bucket_arn
+      bucket_arn = module.vector_store_input_bucket.s3_bucket_arn
     }
     type = "S3"
   }
+  depends_on = [awscc_bedrock_knowledge_base.genai-bedrock-kb]
 
   data_deletion_policy = "RETAIN"
 
