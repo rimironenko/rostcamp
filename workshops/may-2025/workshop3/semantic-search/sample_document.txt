@@ -1,0 +1,12 @@
+# Semantic Search Overview
+
+Semantic search understands meaning, not just keywords. 
+It uses vector embeddings to represent text.
+
+Key benefits:
+- Finds related content even with different words
+- Understands synonyms and context
+- Provides more relevant results
+
+Vector databases like ChromaDB store these embeddings 
+efficiently and enable fast similarity search.
