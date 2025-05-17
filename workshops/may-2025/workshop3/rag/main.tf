@@ -32,7 +32,7 @@ resource "aws_iam_role_policy" "bedrock_service_role_policy" {
         Action = [
           "bedrock:InvokeModel",
         ]
-        Effect = "Allow"
+        Effect   = "Allow"
         Resource = [local.text_embeddings_model_arn]
       },
       {

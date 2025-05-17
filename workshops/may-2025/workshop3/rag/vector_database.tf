@@ -100,7 +100,7 @@ module "aurora_postgresql_v2" {
 }
 
 module "vector_store_bedrock_secret" {
-  source = "terraform-aws-modules/secrets-manager/aws"
+  source  = "terraform-aws-modules/secrets-manager/aws"
   version = "1.3.1"
 
   # Secret
