@@ -65,14 +65,14 @@ flowchart TD
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/semantic-search.git
-cd semantic-search
+git clone https://github.com/rimironenko/rostcamp.git
+cd workshops/may-2025/workshop3/semantic-search 
 ```
 
 2. Set up a virtual environment:
 ```bash
 # Create a virtual environment
-python -m venv venv
+python3 -m venv venv
 
 # Activate the virtual environment
 # On Windows:
@@ -106,10 +106,6 @@ semantic-search/
 │   ├── embedding.py        # Embedding generation module
 │   ├── search.py           # Main semantic search class
 │   └── utils.py            # Utility functions
-└── tests/                  # Test directory
-    ├── __init__.py
-    ├── test_embedding.py
-    └── test_search.py
 ```
 
 ## Usage
@@ -128,7 +124,7 @@ The application provides a simple command-line interface:
 ### Adding Documents
 
 ```bash
-python -m semantic_search.cli add path/to/your/document.txt --collection documents
+python3 -m semantic_search.cli add path/to/your/document.txt --collection documents
 ```
 
 ### Searching
@@ -160,13 +156,60 @@ python -m semantic_search.cli search "your search query here" --collection docum
 
 ```bash
 # Add a document
-python -m semantic_search.cli add research_paper.txt
+python3 -m semantic_search.cli add sample_document.txt
 
 # Search for semantically similar content
-python -m semantic_search.cli search "impact of climate change on coral reefs"
+python3 -m semantic_search.cli search "How does semantic search work?"
+python3 -m semantic_search.cli search "What technologies store AI text representations?"
 ```
 
 Even if the exact phrase "impact of climate change on coral reefs" doesn't appear in your documents, the application will find semantically relevant content about climate effects on marine ecosystems.
+
+## Troubleshooting
+
+### Memory Issues
+
+If you encounter a "killed" message or memory errors when processing large files:
+
+1. **Adjust Configuration Parameters**:
+   
+   Edit `semantic_search/config.py` to reduce memory usage:
+   ```python
+   # Reduce these values for large files
+   CHUNK_SIZE = 300  # Smaller chunks (default is 500)
+   CHUNK_OVERLAP = 50  # Less overlap (default is 100)
+   MAX_CHUNKS_PER_BATCH = 3  # Process fewer chunks at once (default is 5)
+   ```
+
+2. **Process Smaller Files**:
+   
+   Split large documents into smaller files before processing.
+
+3. **System Resources**:
+   
+   - Close other memory-intensive applications
+   - Ensure you have sufficient free RAM
+   - Consider using a machine with more memory for very large documents
+
+The application is designed to gracefully handle memory constraints by processing documents in batches, but very large files may still require configuration adjustments.
+
+### ChromaDB Warnings
+
+If you see a warning message about deprecated ChromaDB configuration:
+
+1. **Update ChromaDB**:
+   ```bash
+   pip install --upgrade chromadb
+   ```
+
+2. **Clear Previous Database**:
+   If you're still experiencing issues after updating, you might need to clear your previous database:
+   ```bash
+   rm -rf ./chroma_db
+   ```
+   Note: This will delete all your indexed documents, so you'll need to re-add them.
+
+The code has been updated to use the current ChromaDB API, but previous database formats might cause compatibility warnings.
 
 ## License
 
