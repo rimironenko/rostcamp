@@ -1,65 +1,10 @@
-# Semantic Search Application
+# Semantic Search with Re-ranking
 
-A Python-based semantic search application that uses OpenAI embeddings and ChromaDB to enable powerful semantic search capabilities for text documents.
+This project implements a semantic search system with advanced re-ranking capabilities, allowing you to:
 
-## Overview
-
-This application allows you to:
-- Process text documents and convert them into semantic vector embeddings
-- Store these embeddings efficiently using ChromaDB 
-- Perform semantic searches on your document collection
-- Find relevant content based on meaning, not just keywords
-
-## Architecture
-
-The application follows this architecture:
-
-```mermaid
-flowchart TD
-    subgraph User Interface
-        A[Command Line Interface] --> B{Command?}
-        B -->|Add| C[Process Text File]
-        B -->|Search| D[Process Query]
-    end
-
-    subgraph OpenAI Embedding
-        E[OpenAI Client] --> F[Embedding API Call]
-        F --> G[Vector Generation]
-    end
-
-    subgraph ChromaDB
-        H[ChromaDB Client] --> I[Collection]
-        I --> J[Vector Storage]
-        I --> K[Query Processing]
-    end
-
-    C --> L[Split into Chunks]
-    L --> M[Metadata Creation]
-    M --> E
-    G --> N[Document Embeddings]
-    N --> J
-
-    D --> E
-    G --> O[Query Embedding]
-    O --> K
-    K --> P[Vector Similarity Search]
-    P --> Q[Ranked Results]
-    Q --> R[Format and Display Results]
-
-    style User Interface fill:#f9d5e5,stroke:#333,stroke-width:1px
-    style OpenAI Embedding fill:#d5e5f9,stroke:#333,stroke-width:1px
-    style ChromaDB fill:#d5f9e8,stroke:#333,stroke-width:1px
-```
-
-## Differences between Semantic and Traditional Search
-
-| Traditional Search | Semantic Search |
-|--------------------|----------------|
-| Matches exact keywords | Understands meaning and intent |
-| Uses inverted indices | Uses vector embeddings |
-| Uses boolean matching | Uses similarity metrics |
-| Lexical analysis | Contextual understanding |
-| Statistical ranking | Language model integration |
+1. **Index documents** for semantic search using OpenAI embeddings
+2. **Search by meaning** rather than just keywords 
+3. **Improve relevance** with various re-ranking techniques
 
 ## Installation
 
@@ -110,47 +55,102 @@ semantic-search/
 
 ## Usage
 
-First, make sure your virtual environment is activated:
-
-```bash
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-```
-
-The application provides a simple command-line interface:
-
 ### Adding Documents
 
 ```bash
-python3 -m semantic_search.cli add path/to/your/document.txt --collection documents
+# Add a document to the search index
+python3 -m semantic_search.cli add document.txt
+
+# You can specify a collection name
+python3 -m semantic_search.cli add document.txt --collection custom_collection
 ```
 
-### Searching
+### Basic Search
 
 ```bash
-python -m semantic_search.cli search "your search query here" --collection documents --results 5
+# General query about vector search
+python -m semantic_search.cli search "how do vector search engines work"
+
+# More specific technical query
+python -m semantic_search.cli search "similarity metrics in vector search"
+```
+
+### Re-ranking Techniques
+
+The application supports four re-ranking methods to improve search relevance:
+
+#### 1. BM25 Re-ranking
+
+Combines traditional lexical search with semantic search for a hybrid approach:
+
+```bash
+python3 -m semantic_search.cli search "database optimization techniques" --rerank bm25
+```
+
+#### 2. Diversity Re-ranking
+
+Increases variety in search results using Maximal Marginal Relevance (MMR):
+
+```bash
+python3 -m semantic_search.cli search "machine learning applications" --rerank diversity --diversity 0.7
+```
+The diversity factor (0-1) controls the balance between relevance and diversity. Higher values increase diversity.
+
+#### 3. Recency Re-ranking
+
+Boosts more recent documents in search results (requires date metadata):
+
+```bash
+python3 -m semantic_search.cli search "latest developments" --rerank recency --recency 0.4
+```
+The recency weight (0-1) controls how much recent documents are favored. Higher values give more weight to recent content.
+
+#### 4. Personalized Re-ranking
+
+Adjusts ranking based on user interests defined in a profile file:
+
+```bash
+# First create a user profile JSON file with weighted interests:
+# {
+#   "machine learning": 0.9,
+#   "python": 0.7,
+#   "databases": 0.6
+# }
+
+python3 -m semantic_search.cli search "optimization techniques" --rerank personalized --profile user_profile.json
+```
+
+### Collection Management
+
+View information about your collections:
+
+```bash
+python3 -m semantic_search.cli info
+
+# Specify a collection
+python3 -m semantic_search.cli info --collection custom_collection
 ```
 
 ## How It Works
 
-1. **Document Processing**: 
-   - Text documents are split into manageable chunks
-   - Each chunk is processed and assigned metadata
+### Document Processing
 
-2. **Embedding Generation**:
-   - The OpenAI API converts text chunks into high-dimensional vectors
-   - These vectors capture the semantic meaning of the text
+1. Documents are split into manageable chunks
+2. Each chunk is converted to a vector embedding using OpenAI's API
+3. Embeddings and metadata are stored in ChromaDB for efficient retrieval
 
-3. **Vector Storage**:
-   - ChromaDB efficiently stores and indexes the vectors
-   - Metadata is preserved for context
+### Semantic Search
 
-4. **Semantic Search**:
-   - User queries are converted to the same vector space
-   - ChromaDB finds the most similar vectors using cosine similarity
-   - Results are ranked and displayed with relevance scores
+1. The search query is converted to the same vector space
+2. ChromaDB performs similarity search to find the most relevant documents
+3. Results are ranked by similarity score
+
+### Re-ranking Methods
+
+1. **BM25**: Combines lexical relevance (term frequencies) with semantic relevance
+2. **Diversity**: Uses MMR to select diverse results that maximize information content
+3. **Recency**: Applies a time-based boost to more recent documents 
+4. **Personalized**: Adjusts scores based on presence of terms from user profile
 
 ## Example
 
@@ -158,9 +158,14 @@ python -m semantic_search.cli search "your search query here" --collection docum
 # Add a document
 python3 -m semantic_search.cli add sample_document.txt
 
-# Search for semantically similar content
-python3 -m semantic_search.cli search "How does semantic search work?"
-python3 -m semantic_search.cli search "What technologies store AI text representations?"
+# Comparing re-ranking methods
+# Base query
+python3 -m semantic_search.cli search "similarity metrics"
+
+# With different re-ranking
+python3 -m semantic_search.cli search "similarity metrics" --rerank bm25
+python3 -m semantic_search.cli search "similarity metrics" --rerank diversity --diversity 0.7
+python3 -m semantic_search.cli search "similarity metrics" --rerank personalized --profile user_profile.json
 ```
 
 Even if the exact phrase "impact of climate change on coral reefs" doesn't appear in your documents, the application will find semantically relevant content about climate effects on marine ecosystems.

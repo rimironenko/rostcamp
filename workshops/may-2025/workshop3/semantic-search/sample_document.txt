@@ -1,12 +1,46 @@
-# Semantic Search Overview
+# Vector Search and Semantic Matching
 
-Semantic search understands meaning, not just keywords. 
-It uses vector embeddings to represent text.
+## Introduction to Vector Search
+Vector search transforms how we find information by understanding meaning rather than matching keywords. Unlike traditional search engines that look for exact word matches, vector search captures the semantic intent behind queries.
 
-Key benefits:
-- Finds related content even with different words
-- Understands synonyms and context
-- Provides more relevant results
+## How Vector Embeddings Work
+Vector embeddings convert text into numerical arrays that represent semantic meaning. Similar concepts have similar vector representations, enabling matching based on meaning rather than exact wording. Modern embedding models can represent complex relationships between words and concepts in high-dimensional space.
 
-Vector databases like ChromaDB store these embeddings 
-efficiently and enable fast similarity search.
+## Similarity Metrics
+Several metrics determine how similar two vectors are:
+- Cosine similarity measures the angle between vectors, ignoring magnitude differences
+- Euclidean distance calculates the straight-line distance between vectors
+- Dot product considers both angle and magnitude when comparing vectors
+
+## Re-ranking Methods
+Re-ranking improves initial vector search results:
+
+1. BM25 Re-ranking combines traditional keyword matching with vector similarity. This hybrid approach balances exact term matches with semantic understanding, often producing more relevant results for technical queries.
+
+2. Diversity Re-ranking ensures variety in results using Maximal Marginal Relevance (MMR). This technique reduces redundancy by balancing relevance with information diversity, showing different aspects of a topic.
+
+3. Personalized Re-ranking adjusts scores based on user preferences and history. By incorporating user profiles, search results can be tailored to individual interests and needs.
+
+## Real-World Applications
+Vector search powers numerous applications:
+
+E-commerce platforms use vector search for product discovery, helping customers find items similar to ones they've viewed or matching their descriptions.
+
+Content recommendation systems leverage vector embeddings to suggest articles, videos, or products based on semantic similarity.
+
+Knowledge management systems employ vector search to find relevant documents across large corporate repositories, even when terminology varies.
+
+## Performance Optimization
+Several factors affect vector search performance:
+
+- Index size and complexity impact query speed
+- Vector dimensionality affects both accuracy and computational requirements
+- Approximate nearest neighbor algorithms provide faster results for large datasets
+- Caching and query optimization techniques can significantly improve response times
+
+## Recent Developments
+Hybrid search approaches combining sparse and dense representations are gaining popularity. These methods integrate traditional keyword matching with semantic understanding.
+
+Multi-modal vector search allows querying across different content types, such as finding images that match text descriptions.
+
+Advanced re-ranking techniques using machine learning continue to improve search quality by better understanding user intent and context.
