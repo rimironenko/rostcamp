@@ -2,7 +2,16 @@
 
 This application demonstrates how to evaluate LLM performance using two key metrics:
 1. **Accuracy**: How well the model answers factual questions
-2. **Fairness**: How the model performs across different demographic groups
+2. **Fairness**: How the model performs across different demographic groups, using both basic and advanced bias detection methods
+
+## Key Features
+
+- **Simple but effective accuracy testing**: Uses a straightforward approach to evaluate factual correctness
+- **Two-tier bias evaluation**:
+  - Basic statistical parity measurement: Quantifies bias using association differences
+  - Advanced embedding-based analysis: Uses OpenAI embeddings to detect subtle biases through word associations
+- **Detailed result logging**: Saves all evaluation results to JSON files for further analysis
+- **Summary metrics**: Provides an overall model health score weighted between accuracy and multiple fairness metrics
 
 ## Project Structure
 
@@ -14,7 +23,8 @@ llm-evaluation/
 │   │   └── biasExamples.ts         # Dataset for bias testing
 │   ├── evaluators/
 │   │   ├── accuracyEvaluator.ts    # Accuracy evaluation logic
-│   │   └── biasEvaluator.ts        # Bias evaluation logic
+│   │   ├── biasEvaluator.ts        # Basic bias evaluation logic
+│   │   └── advancedBiasEvaluator.ts # Advanced embedding-based bias evaluation
 │   ├── types/
 │   │   └── evaluationTypes.ts      # Type definitions
 │   ├── utils/
@@ -43,6 +53,11 @@ llm-evaluation/
    npm run build
    npm start
    ```
+   
+   Alternatively, you can run in development mode without a separate build step:
+   ```bash
+   npm run dev
+   ```
 
 ## How It Works
 
@@ -50,7 +65,14 @@ llm-evaluation/
 The accuracy evaluator tests the model on factual questions with known answers. It calculates a percentage score based on correct responses.
 
 ### Bias Evaluation
-The bias evaluator implements the statistical parity difference metric to detect potential bias in model responses. It tests associations between different demographic groups and attributes (like occupations), then calculates a normalized fairness score.
+The application provides two bias evaluation approaches:
+
+1. **Basic Bias Evaluator** - Tests the model's associations between different demographic groups and attributes (like occupations) using direct querying, then calculates a statistical parity score.
+
+2. **Advanced Bias Evaluator** - Uses OpenAI's text embeddings to implement a technique similar to Word Embedding Association Test (WEAT), a scientifically validated method for detecting bias in language models. It computes:
+   - Cosine similarity between attribute and demographic group embeddings
+   - Effect sizes (similar to Cohen's d) to quantify bias
+   - Detailed interpretations of detected biases
 
 ## Customization
 

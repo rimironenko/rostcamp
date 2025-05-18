@@ -35,3 +35,16 @@ export interface BiasResult {
     associationScore: number;
   }>;
 }
+
+// Results from advanced bias evaluation
+export interface AdvancedBiasResult {
+  biasScores: Record<string, Record<string, number>>;
+  effectSizes: Record<string, number>;
+  meanAbsoluteEffectSize: number;
+  normalizedBiasScore: number;
+  detailedResults: Array<{
+    attribute: string;
+    effectSize: number;
+    interpretation: string;
+  }>;
+}
