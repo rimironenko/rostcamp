@@ -40,6 +40,10 @@ llm-evaluation/
 ## Setup Instructions
 
 1. Clone this repository
+   ```bash
+   git clone https://github.com/rimironenko/rostcamp.git
+   cd workshops/may-2025/workshop4/llm-evaluation-metrics
+   ```
 2. Install dependencies:
    ```bash
    npm install
