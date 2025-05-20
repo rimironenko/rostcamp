@@ -1,0 +1,3 @@
+"""
+Semantic Search Application
+""" 
