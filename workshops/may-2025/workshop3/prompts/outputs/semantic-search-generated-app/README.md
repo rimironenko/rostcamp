@@ -29,7 +29,7 @@ source .venv/bin/activate
 3. **Install dependencies**
 
 ```bash
-pip install-e .
+pip install -e .
 ```
 
 4. **Set up environment variables**

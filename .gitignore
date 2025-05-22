@@ -14,3 +14,5 @@
 **/__pycache__
 **/builds
 workshops/may-2025/workshop4/llm-evaluation-metrics/results
+*.egg-info
+workshops/may-2025/workshop3/prompts/outputs/semantic-search-generated-app/data/chroma
