@@ -1,7 +1,32 @@
+model: gpt-4o
+temperature: 0.0
+max_tokens: 1000
 metrics:
   - accuracy
+  - relevance
   - coherence
-
-model: gpt-3.5-turbo
+  - helpfulness
+test_cases:
+  - name: factual_qa
+    description: "Testing factual question answering capabilities"
+    examples:
+      - input: "What is the capital of France?"
+        expected: "Paris"
+      - input: "Who wrote Romeo and Juliet?"
+        expected: "William Shakespeare"
+  - name: explanation
+    description: "Testing explanation capabilities"
+    examples:
+      - input: "Explain how a computer works in simple terms"
+        expected: "A clear, simple explanation of computer operation"
+      - input: "What is machine learning?"
+        expected: "A clear explanation of machine learning concepts"
+  - name: creative_writing
+    description: "Testing creative writing capabilities"
+    examples:
+      - input: "Write a short story about a robot learning to paint"
+        expected: "A creative, coherent short story"
+      - input: "Write a poem about the ocean"
+        expected: "A creative, coherent poem"
 
 dataset_path: openai_eval.jsonl 

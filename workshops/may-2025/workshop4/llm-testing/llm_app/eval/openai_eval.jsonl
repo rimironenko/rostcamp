@@ -1,3 +1,6 @@
-{"prompt": "Hello, how are you?", "response": "I'm doing well, thank you for asking!"}
-{"prompt": "What is the capital of France?", "response": "The capital of France is Paris."}
-{"prompt": "Tell me a fun fact about the ocean.", "response": "The ocean contains 97% of Earth's water and covers 71% of the Earth's surface."} 
+{"input": "What is the capital of France?", "expected": "Paris", "category": "factual_qa"}
+{"input": "Who wrote Romeo and Juliet?", "expected": "William Shakespeare", "category": "factual_qa"}
+{"input": "Explain how a computer works in simple terms", "expected": "A clear, simple explanation of computer operation", "category": "explanation"}
+{"input": "What is machine learning?", "expected": "A clear explanation of machine learning concepts", "category": "explanation"}
+{"input": "Write a short story about a robot learning to paint", "expected": "A creative, coherent short story", "category": "creative_writing"}
+{"input": "Write a poem about the ocean", "expected": "A creative, coherent poem", "category": "creative_writing"} 

@@ -44,14 +44,31 @@ Run specific test files:
 ```bash
 python -m pytest tests/test_llm_client.py
 python -m pytest tests/test_prompts.py
+python -m pytest tests/test_openai_eval.py   # OpenAI Eval tests
+python -m pytest tests/test_deepeval.py      # DeepEval tests
 ```
 
 ## 📊 Evaluation
 
-The project includes evaluation support using OpenAI's evaluation framework:
+The project includes evaluation support using both OpenAI's evaluation framework and DeepEval:
 
-- Test cases are in `eval/openai_eval.jsonl`
+### OpenAI Eval
+- Test cases are in `eval/openai_eval.jsonl` (edit or add your own for custom evaluation)
 - Configuration is in `eval/openai_eval_config.yaml`
+- To run the OpenAI Eval tests:
+  ```bash
+  python -m pytest tests/test_openai_eval.py -v
+  ```
+- These tests check LLM responses for accuracy, relevance, coherence, and helpfulness, using the prompts and expected answers in the dataset.
+
+### DeepEval
+- DeepEval tests are in `tests/test_deepeval.py`
+- These tests use DeepEval's metrics (hallucination, answer relevancy, etc.) to evaluate LLM responses
+- To run DeepEval tests:
+  ```bash
+  python -m pytest tests/test_deepeval.py -v
+  ```
+- You can add or modify test cases in the file to suit your evaluation needs.
 
 ## 📁 Project Structure
 

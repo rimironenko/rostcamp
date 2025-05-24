@@ -16,7 +16,7 @@ def mock_openai_response():
 def test_llm_client_initialization():
     """Test that LLMClient initializes correctly."""
     client = LLMClient()
-    assert client.model == "gpt-3.5-turbo"
+    assert client.model == "gpt-4o"
     assert client.temperature == 0.7
     assert client.max_tokens == 1000
 
@@ -35,7 +35,7 @@ def test_get_completion(mock_openai, mock_openai_response):
     # Verify
     assert response == "Test response"
     mock_client.chat.completions.create.assert_called_once_with(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=[{"role": "user", "content": "Test prompt"}],
         temperature=0.7,
         max_tokens=1000
