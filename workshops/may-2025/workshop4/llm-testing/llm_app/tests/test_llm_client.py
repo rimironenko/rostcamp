@@ -40,3 +40,15 @@ def test_get_completion(mock_openai, mock_openai_response):
         temperature=0.7,
         max_tokens=1000
     )
+
+@patch('app.llm_client.OpenAI')
+def test_get_completion_error(mock_openai):
+    """Test that get_completion raises an exception on API error."""
+    mock_client = Mock()
+    mock_client.chat.completions.create.side_effect = Exception("API error")
+    mock_openai.return_value = mock_client
+
+    client = LLMClient()
+    with pytest.raises(Exception) as excinfo:
+        client.get_completion("Test prompt")
+    assert "Error getting completion from OpenAI: API error" in str(excinfo.value)
