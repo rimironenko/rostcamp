@@ -1,5 +1,5 @@
 from openai import OpenAI
-from app.config import OPENAI_API_KEY, MODEL_NAME, DEFAULT_TEMPERATURE, MAX_TOKENS
+from .config import OPENAI_API_KEY, MODEL_NAME, DEFAULT_TEMPERATURE, MAX_TOKENS
 
 class LLMClient:
     def __init__(self):
