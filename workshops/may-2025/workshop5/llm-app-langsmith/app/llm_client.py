@@ -1,9 +1,12 @@
 from openai import OpenAI
-from .config import OPENAI_API_KEY, MODEL_NAME, DEFAULT_TEMPERATURE, MAX_TOKENS
+from langsmith import Client
+from .config import OPENAI_API_KEY, MODEL_NAME, DEFAULT_TEMPERATURE, MAX_TOKENS, LANGSMITH_API_KEY
 
 class LLMClient:
     def __init__(self):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
+        # Just initialize the LangSmith client to verify API key works
+        self.langsmith_client = Client(api_key=LANGSMITH_API_KEY)
         self.model = MODEL_NAME
         self.temperature = DEFAULT_TEMPERATURE
         self.max_tokens = MAX_TOKENS

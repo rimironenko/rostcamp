@@ -11,6 +11,11 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 if not OPENAI_API_KEY:
     raise ValueError("OPENAI_API_KEY environment variable is not set")
 
+# LangSmith configuration
+LANGSMITH_API_KEY = os.getenv('LANGSMITH_API_KEY')
+if not LANGSMITH_API_KEY:
+    raise ValueError("LANGSMITH_API_KEY environment variable is not set")
+
 MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-3.5-turbo')
 
 # Application configuration
