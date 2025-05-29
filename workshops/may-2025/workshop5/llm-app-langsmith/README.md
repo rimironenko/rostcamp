@@ -149,3 +149,25 @@ llm_app/
 - Follow the existing code style
 - Add tests for new functionality
 - Update documentation as needed
+
+## Running the Local Dashboard
+
+To run the local dashboard, follow these steps:
+
+1. Ensure your application is running:
+   ```bash
+   python -m app.main
+   ```
+
+2. In a separate terminal, run the dashboard server:
+   ```bash
+   python -m app.dashboard
+   ```
+
+3. Open your web browser and navigate to:
+   ```
+   http://localhost:8000
+   ```
+   (or the port specified in your configuration)
+
+The dashboard provides real-time metrics and feedback for your LLM application.
