@@ -6,8 +6,18 @@ import uuid
 import time
 import logging
 import re
-from typing import Optional, Dict, Any, List, Tuple
-from .config import OPENAI_API_KEY, MODEL_NAME, DEFAULT_TEMPERATURE, MAX_TOKENS, LANGSMITH_API_KEY
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Optional, Dict, Any, List, Tuple, Union
+from .config import (
+    OPENAI_API_KEY, 
+    MODEL_NAME, 
+    DEFAULT_TEMPERATURE, 
+    MAX_TOKENS, 
+    LANGSMITH_API_KEY,
+    LANGSMITH_PROJECT
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -16,13 +26,13 @@ logger = logging.getLogger(__name__)
 class LLMClient:
     def __init__(self, session_id: Optional[str] = None, user_id: Optional[str] = None):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
-        # Just initialize the LangSmith client to verify API key works
         self.langsmith_client = Client(api_key=LANGSMITH_API_KEY)
         self.model = MODEL_NAME
         self.temperature = DEFAULT_TEMPERATURE
         self.max_tokens = MAX_TOKENS
         self.session_id = session_id or str(uuid.uuid4())
         self.user_id = user_id
+        self.project_name = LANGSMITH_PROJECT
         
         # Monitoring thresholds
         self.max_response_time = 5.0  # seconds
@@ -38,6 +48,11 @@ class LLMClient:
         self.min_response_length = 10  # Minimum expected response length
         self.max_response_length = 1000  # Maximum expected response length
         
+        # Feedback collection
+        self.feedback_dir = Path("feedback")
+        self.feedback_dir.mkdir(exist_ok=True)
+        self.current_feedback: Dict[str, Any] = {}
+        
         # LangChain LLM for tracing
         self.lc_llm = ChatOpenAI(
             openai_api_key=OPENAI_API_KEY,
@@ -45,7 +60,68 @@ class LLMClient:
             temperature=self.temperature,
             max_tokens=self.max_tokens
         )
-        self.tracer = LangChainTracer()
+        self.tracer = LangChainTracer(project_name=self.project_name)
+
+    def collect_feedback(self, 
+                        prompt: str, 
+                        response: str, 
+                        rating: int, 
+                        feedback_text: Optional[str] = None,
+                        metadata: Optional[Dict[str, Any]] = None) -> None:
+        """
+        Collect user feedback for an LLM response.
+        
+        Args:
+            prompt (str): The original prompt
+            response (str): The LLM response
+            rating (int): User rating (1-5)
+            feedback_text (str, optional): Additional feedback text
+            metadata (Dict[str, Any], optional): Additional metadata
+        """
+        if not 1 <= rating <= 5:
+            raise ValueError("Rating must be between 1 and 5")
+            
+        feedback_data = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "session_id": self.session_id,
+            "user_id": self.user_id,
+            "prompt": prompt,
+            "response": response,
+            "rating": rating,
+            "feedback_text": feedback_text,
+            "metadata": metadata or {}
+        }
+        
+        # Add evaluation metrics
+        feedback_data["evaluation_metrics"] = self._evaluate_response(prompt, response)
+        
+        # Store feedback
+        feedback_file = self.feedback_dir / f"feedback_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(feedback_file, 'w') as f:
+            json.dump(feedback_data, f, indent=2)
+            
+        logger.info(f"Feedback collected and stored in {feedback_file}")
+        
+        # Update current feedback for this session
+        self.current_feedback = feedback_data
+
+    def get_feedback_summary(self) -> Dict[str, Any]:
+        """
+        Get a summary of feedback for the current session.
+        
+        Returns:
+            Dict[str, Any]: Feedback summary
+        """
+        if not self.current_feedback:
+            return {"message": "No feedback collected yet"}
+            
+        return {
+            "session_id": self.session_id,
+            "user_id": self.user_id,
+            "last_rating": self.current_feedback.get("rating"),
+            "last_feedback": self.current_feedback.get("feedback_text"),
+            "timestamp": self.current_feedback.get("timestamp")
+        }
 
     def _evaluate_response(self, prompt: str, response: str) -> Dict[str, Any]:
         """
@@ -146,7 +222,8 @@ class LLMClient:
                 "model": self.model,
                 "temperature": self.temperature,
                 "max_tokens": self.max_tokens,
-                "prompt_length": len(prompt)
+                "prompt_length": len(prompt),
+                "project_name": self.project_name
             }
             
             result = self.lc_llm.invoke(
@@ -154,7 +231,11 @@ class LLMClient:
                 config={
                     "callbacks": [self.tracer],
                     "metadata": metadata,
-                    "tags": [f"session_{self.session_id}", f"user_{self.user_id}"] if self.user_id else [f"session_{self.session_id}"]
+                    "tags": [
+                        f"session_{self.session_id}",
+                        f"user_{self.user_id}" if self.user_id else None,
+                        f"project_{self.project_name}"
+                    ]
                 }
             )
             

@@ -4,6 +4,7 @@ sys.path.append(str(Path(__file__).parent))
 
 from .prompt_router import route_prompt
 from .llm_client import LLMClient
+from .config import LANGSMITH_PROJECT
 
 def get_user_rating() -> int:
     """Get user rating for the response."""
@@ -26,6 +27,7 @@ def main():
     llm_client = LLMClient()
     
     print("Welcome to the LLM Chat Application!")
+    print(f"Using LangSmith project: {LANGSMITH_PROJECT}")
     print("Type 'exit' to quit, or 'feedback' to see your feedback summary")
     
     # Get user input
