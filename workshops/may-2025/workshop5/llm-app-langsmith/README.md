@@ -1,6 +1,62 @@
-# LLM Prompt Application
+# LLM Application with LangSmith Integration
 
-A Python application for interacting with OpenAI's API to handle prompts, with a focus on modularity, testing, and evaluation.
+This project is a simple LLM application that uses OpenAI's API to generate responses to user prompts. It also integrates with LangSmith for tracing and monitoring LLM calls, and includes a local dashboard for evaluation metrics and feedback.
+
+## Features
+
+- **OpenAI Integration**: Uses OpenAI's API to generate responses.
+- **LangSmith Integration**: Traces and monitors LLM calls using LangSmith.
+- **Local Dashboard**: A local dashboard is available for viewing evaluation metrics and user feedback.
+
+## Setup
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
+
+2. **Create a virtual environment**:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows, use `.venv\Scripts\activate`
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables**:
+   Create a `.env` file in the root directory with the following variables:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   LANGSMITH_API_KEY=your_langsmith_api_key
+   LANGSMITH_PROJECT=your_langsmith_project_name
+   ```
+
+5. **Run the application**:
+   ```bash
+   python -m app.main
+   ```
+
+6. **Access the local dashboard**:
+   The local dashboard is available at `http://localhost:8000` (or the port specified in your configuration).
+
+## Testing
+
+Run the automated tests using pytest:
+```bash
+python -m pytest tests/ -v
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🚀 Setup
 
