@@ -2,7 +2,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.15.0"
 
-  name = "genai-vpc-${random_pet.this.id}"
+  name = "ollama-vpc-${random_pet.this.id}"
   cidr = local.vpc_cidr
 
   azs              = local.azs
