@@ -24,6 +24,9 @@ def handler(event, context):
     response_body = response.get('output', '{}').get('text', '<Empty text>')
     return {
         'statusCode': 200,
+        'headers': {
+            'Content-Type': 'application/json'
+        },
         'body': json.dumps({
             'genai_response': response_body
         })

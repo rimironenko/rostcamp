@@ -13,6 +13,11 @@ module "lambda_function" {
   publish                    = true
   timeout                    = 60
   create_lambda_function_url = true
+  cors = {
+    allow_origins = ["*"]
+    allow_methods = ["*"]
+    allow_headers = ["Content-Type"]
+  }
 
   source_path = "${path.module}/src"
 
