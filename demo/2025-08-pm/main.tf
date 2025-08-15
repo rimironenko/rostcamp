@@ -1,3 +1,26 @@
+
+module "website_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "4.2.2"
+
+  bucket        = "2025-08-pm-${random_pet.this.id}"
+  force_destroy = true
+  website = {
+    index_document = "index.html"
+    error_document = "index.html"
+  }
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+  attach_policy           = true
+  policy                  = data.aws_iam_policy_document.bucket_policy.json
+
+
+  tags = var.aws_resource_tags
+
+}
+
 ####################################################
 # Lambda Function (building from source)
 ####################################################
@@ -14,7 +37,7 @@ module "lambda_function" {
   timeout                    = 60
   create_lambda_function_url = true
   cors = {
-    allow_origins = ["*"]
+    allow_origins = ["http://${module.website_bucket.s3_bucket_website_endpoint}"]
     allow_methods = ["*"]
     allow_headers = ["Content-Type"]
   }
