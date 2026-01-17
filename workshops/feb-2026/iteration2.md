@@ -69,9 +69,3 @@ Take the previously generated Terraform application (public API with Lambda and 
 - Assume this will be used by a real engineering team in a real company
 
 Optimize for **security, blast-radius reduction, and cost safety**, not speed.
-
----
-
-## Key Message for the Workshop
-The application did not change.
-The **human framing** did.
